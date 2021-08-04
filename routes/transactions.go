@@ -2,11 +2,14 @@ package routes
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAccountsRoutes(r *gin.Engine) {
+func RegisterTransactionRoutes(e *gin.Engine) {
+	e.POST("/transactions", InsertTransaction)
 }
 
+func InsertTransaction(c *gin.Context) {
+	c.Status(http.StatusCreated)
+}

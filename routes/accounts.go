@@ -8,7 +8,12 @@ import (
 	"github.com/mniak/Alkanoid/domain"
 )
 
-func GET_Accounts_ID(c *gin.Context) {
+func RegisterAccountsRoutes(e *gin.Engine) {
+	e.POST("/accounts", InsertAccount)
+	e.GET("/accounts/:accountId", GetAccount)
+}
+
+func GetAccount(c *gin.Context) {
 	accountIDString := c.Param("accountId")
 	accountID, err := strconv.Atoi(accountIDString)
 	if err != nil {
@@ -21,6 +26,6 @@ func GET_Accounts_ID(c *gin.Context) {
 	})
 }
 
-func POST_Accounts(c *gin.Context) {
+func InsertAccount(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
