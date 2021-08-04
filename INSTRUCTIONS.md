@@ -7,8 +7,7 @@ Cada transação possui um tipo (compra a vista, compra parcelada, saque ou paga
 Transações de tipo _​compra e saque_  são registradas com _​valor negativo​_, enquanto transações de **​pagamento​** são registradas com **​valor positivo​**.
 
 ## Estrutura de dados
-Segue abaixo uma estrutura de dados ​sugerida ​(fique a vontade para criar seu próprio
-modelo​)​:
+Segue abaixo uma estrutura de dados ​sugerida ​(fique a vontade para criar seu próprio modelo​)​:
 
 ### `Accounts`
 | Account_ID | Document_Number |
