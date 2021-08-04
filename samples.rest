@@ -1,11 +1,15 @@
+# criação de uma conta
 POST http://localhost:8080/accounts
 
 {
     "document_number": "12345678900"
 }
 
+# consulta de informações de uma conta
 GET​ http://localhost:8080/accounts/1
 
+
+# criação de uma transação
 POST​ /transactions
 
 {
