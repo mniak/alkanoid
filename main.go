@@ -7,6 +7,6 @@ import (
 
 func main() {
 	r := gin.Default()
-	routes.RegisterRoutes(r)
+	routes.RegisterAllRoutes(r)
 	r.Run()
 }
