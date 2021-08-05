@@ -15,7 +15,7 @@ func setupRouter(app application.Application) *gin.Engine {
 }
 
 func main() {
-	var app application.Application
+	app := application.New()
 	r := setupRouter(app)
 	r.Run()
 }
