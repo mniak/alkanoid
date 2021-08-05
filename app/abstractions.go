@@ -1,4 +1,4 @@
-package application
+package app
 
 type Application interface {
 	CreateAccount(CreateAccountRequest) (CreateAccountResponse, error)

@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mniak/Alkanoid/application"
+	"github.com/mniak/Alkanoid/app"
 )
 
-func CreateAccount(app application.Application, c *gin.Context) error {
-	var req application.CreateAccountRequest
+func CreateAccount(a app.Application, c *gin.Context) error {
+	var req app.CreateAccountRequest
 	c.BindJSON(&req)
 
-	resp, err := app.CreateAccount(req)
+	resp, err := a.CreateAccount(req)
 	if err != nil {
 		return err
 	}
@@ -19,11 +19,11 @@ func CreateAccount(app application.Application, c *gin.Context) error {
 	return nil
 }
 
-func GetAccount(app application.Application, c *gin.Context) error {
-	var req application.GetAccountRequest
+func GetAccount(a app.Application, c *gin.Context) error {
+	var req app.GetAccountRequest
 	c.BindUri(&req)
 
-	resp, err := app.GetAccount(req)
+	resp, err := a.GetAccount(req)
 	if err != nil {
 		return err
 	}
@@ -31,11 +31,11 @@ func GetAccount(app application.Application, c *gin.Context) error {
 	return nil
 }
 
-func CreateTransaction(app application.Application, c *gin.Context) error {
-	var req application.CreateTransactionRequest
+func CreateTransaction(a app.Application, c *gin.Context) error {
+	var req app.CreateTransactionRequest
 	c.BindJSON(&req)
 
-	resp, err := app.CreateTransaction(req)
+	resp, err := a.CreateTransaction(req)
 	if err != nil {
 		return err
 	}

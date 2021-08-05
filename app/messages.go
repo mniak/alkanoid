@@ -1,4 +1,4 @@
-package application
+package app
 
 /*
 Para que as coisas fiquem mais simples, optei por

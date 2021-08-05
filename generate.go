@@ -1,3 +1,3 @@
-package main
+package alkanoid
 
-//go:generate mockgen -package=mocks -destination=internal/mocks/application.go	github.com/mniak/Alkanoid/application Application
+//go:generate mockgen -package=mocks -destination=internal/mocks/app.go	github.com/mniak/Alkanoid/app Application
