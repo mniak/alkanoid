@@ -8,12 +8,14 @@ import (
 )
 
 func CreateAccount(app application.Application, c *gin.Context) error {
-	req := application.CreateAccountRequest{}
-	_, err := app.CreateAccount(req)
+	var req application.CreateAccountRequest
+	c.BindJSON(&req)
+
+	resp, err := app.CreateAccount(req)
 	if err != nil {
 		return err
 	}
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, resp)
 	return nil
 }
 
