@@ -20,12 +20,11 @@ func TestCreateAccount(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	requestObj := application.CreateAccountRequest{
-		DocumentNumber: gofakeit.Numerify("##.###.###/####-##"),
-	}
-	responseObj := application.CreateAccountResponse{
-		AccountID: int(gofakeit.Int32()),
-	}
+	var requestObj application.CreateAccountRequest
+	var responseObj application.CreateAccountResponse
+	gofakeit.Struct(&requestObj)
+	gofakeit.Struct(&responseObj)
+
 	app := mocks.NewMockApplication(ctrl)
 	app.EXPECT().
 		CreateAccount(requestObj).
@@ -52,13 +51,11 @@ func TestGetAccount(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	requestObj := application.GetAccountRequest{
-		AccountID: int(gofakeit.Int32()),
-	}
-	responseObj := application.GetAccountResponse{
-		AccountID:      requestObj.AccountID,
-		DocumentNumber: gofakeit.Numerify("##.###.###/####-##"),
-	}
+	var requestObj application.GetAccountRequest
+	var responseObj application.GetAccountResponse
+	gofakeit.Struct(&requestObj)
+	gofakeit.Struct(&responseObj)
+
 	app := mocks.NewMockApplication(ctrl)
 	app.EXPECT().
 		GetAccount(requestObj).
@@ -81,14 +78,11 @@ func TestCreateTransaction(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	requestObj := application.CreateTransactionRequest{
-		AccountID:       int(gofakeit.Int32()),
-		OperationTypeID: int(gofakeit.Int32()),
-		Amount:          gofakeit.Float64(),
-	}
-	responseObj := application.CreateTransactionResponse{
-		TransactionID: int(gofakeit.Int32()),
-	}
+	var requestObj application.CreateTransactionRequest
+	var responseObj application.CreateTransactionResponse
+	gofakeit.Struct(&requestObj)
+	gofakeit.Struct(&responseObj)
+
 	app := mocks.NewMockApplication(ctrl)
 	app.EXPECT().
 		CreateTransaction(requestObj).
