@@ -22,6 +22,7 @@ func CreateAccount(app application.Application, c *gin.Context) error {
 func GetAccount(app application.Application, c *gin.Context) error {
 	var req application.GetAccountRequest
 	c.BindUri(&req)
+
 	resp, err := app.GetAccount(req)
 	if err != nil {
 		return err
@@ -31,11 +32,13 @@ func GetAccount(app application.Application, c *gin.Context) error {
 }
 
 func CreateTransaction(app application.Application, c *gin.Context) error {
-	req := application.CreateTransactionRequest{}
-	_, err := app.CreateTransaction(req)
+	var req application.CreateTransactionRequest
+	c.BindJSON(&req)
+
+	resp, err := app.CreateTransaction(req)
 	if err != nil {
 		return err
 	}
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, resp)
 	return nil
 }

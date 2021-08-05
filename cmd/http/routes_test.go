@@ -24,7 +24,7 @@ func TestCreateAccount(t *testing.T) {
 		DocumentNumber: gofakeit.Numerify("##.###.###/####-##"),
 	}
 	responseObj := application.CreateAccountResponse{
-		AccountID: gofakeit.Number(1, 100),
+		AccountID: int(gofakeit.Int32()),
 	}
 	app := mocks.NewMockApplication(ctrl)
 	app.EXPECT().
@@ -53,7 +53,7 @@ func TestGetAccount(t *testing.T) {
 	defer ctrl.Finish()
 
 	requestObj := application.GetAccountRequest{
-		AccountID: gofakeit.Number(1, 100),
+		AccountID: int(gofakeit.Int32()),
 	}
 	responseObj := application.GetAccountResponse{
 		AccountID:      requestObj.AccountID,
@@ -72,6 +72,40 @@ func TestGetAccount(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 
 	var parsedResponse application.GetAccountResponse
+	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &parsedResponse))
+
+	require.Equal(t, responseObj, parsedResponse)
+}
+
+func TestCreateTransaction(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	requestObj := application.CreateTransactionRequest{
+		AccountID:       int(gofakeit.Int32()),
+		OperationTypeID: int(gofakeit.Int32()),
+		Amount:          gofakeit.Float64(),
+	}
+	responseObj := application.CreateTransactionResponse{
+		TransactionID: int(gofakeit.Int32()),
+	}
+	app := mocks.NewMockApplication(ctrl)
+	app.EXPECT().
+		CreateTransaction(requestObj).
+		Return(responseObj, nil)
+
+	router := setupRouter(app)
+
+	w := httptest.NewRecorder()
+
+	reqBytes, err := json.Marshal(requestObj)
+	require.NoError(t, err)
+
+	req, _ := http.NewRequest("POST", "/transactions", bytes.NewReader(reqBytes))
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 201, w.Code)
+
+	var parsedResponse application.CreateTransactionResponse
 	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &parsedResponse))
 
 	require.Equal(t, responseObj, parsedResponse)
