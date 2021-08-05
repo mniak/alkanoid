@@ -29,7 +29,12 @@ func (r *_AccountRepository) Save(acc domain.Account) (int, error) {
 func (r *_AccountRepository) Load(id int) (domain.Account, error) {
 	acc, ok := r.data[id]
 	if !ok {
-		return domain.Account{}, domain.ErrAccountNotFound
+		return domain.Account{}, domain.ErrNotFound
 	}
 	return acc, nil
+}
+
+func (r *_AccountRepository) Exists(id int) (bool, error) {
+	_, ok := r.data[id]
+	return ok, nil
 }

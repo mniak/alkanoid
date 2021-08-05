@@ -29,7 +29,7 @@ func (r *_TransactionRepository) Save(acc domain.Transaction) (int, error) {
 func (r *_TransactionRepository) Load(id int) (domain.Transaction, error) {
 	acc, ok := r.data[id]
 	if !ok {
-		return domain.Transaction{}, domain.ErrTransactionNotFound
+		return domain.Transaction{}, domain.ErrNotFound
 	}
 	return acc, nil
 }

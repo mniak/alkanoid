@@ -34,7 +34,7 @@ func TestTransactionRepo_LoadInvalid_ShouldReturnSpecificError(t *testing.T) {
 
 	_, err := sut.Load(id)
 	assert.Error(t, err)
-	assert.Equal(t, domain.ErrTransactionNotFound, err)
+	assert.Equal(t, domain.ErrNotFound, err)
 }
 
 func TestTransactionRepo_SaveBigId_ShouldUpdateInternalCounter(t *testing.T) {

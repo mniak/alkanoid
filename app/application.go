@@ -1,6 +1,10 @@
 package app
 
-import "github.com/mniak/Alkanoid/domain"
+import (
+	"fmt"
+
+	"github.com/mniak/Alkanoid/domain"
+)
 
 type _Application struct {
 	accountRepo     domain.AccountRepository
@@ -21,8 +25,12 @@ func (a _Application) CreateAccount(req CreateAccountRequest) (resp CreateAccoun
 	account := domain.NewAccount(
 		domain.DocumentNumber(req.DocumentNumber),
 	)
-	err = account.Validate()
-	if err != nil {
+	valres := account.Validate()
+	if valres.Error != nil {
+		err = valres.Error
+		return
+	} else if !valres.IsValid {
+		err = fmt.Errorf("cannot create account: %s", valres.String())
 		return
 	}
 
@@ -52,8 +60,12 @@ func (a _Application) CreateTransaction(req CreateTransactionRequest) (resp Crea
 		domain.OperationType(req.OperationTypeID),
 		req.Amount,
 	)
-	err = transaction.Validate()
-	if err != nil {
+	valres := transaction.Validate()
+	if valres.Error != nil {
+		err = valres.Error
+		return
+	} else if !valres.IsValid {
+		err = fmt.Errorf("cannot create account: %s", valres.String())
 		return
 	}
 

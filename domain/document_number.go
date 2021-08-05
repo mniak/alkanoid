@@ -1,28 +1,25 @@
 package domain
 
 import (
-	"errors"
 	"regexp"
 )
 
 type DocumentNumber string
 
-var ErrInvalidDocumentNumber = errors.New("invalid document number")
-
-func (dn DocumentNumber) Validate() error {
+func (dn DocumentNumber) Validate() ValidationResult {
 	if dn == "" {
-		return ErrInvalidDocumentNumber
+		return InvalidResult("empty document number")
 	}
 
 	ok, err := regexp.MatchString(`^[0-9/.\-]+$`, string(dn))
 	if err != nil {
-		return err
+		return ValidationErrorResult(err)
 	}
 	if !ok {
-		return ErrInvalidDocumentNumber
+		return InvalidResult("invalid characters on document number")
 	}
 
-	return nil
+	return ValidResult()
 }
 
 func (dn DocumentNumber) String() string {

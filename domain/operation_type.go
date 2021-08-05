@@ -1,6 +1,6 @@
 package domain
 
-import "errors"
+import "fmt"
 
 type OperationType int
 
@@ -25,11 +25,9 @@ func (ot OperationType) String() string {
 	return "TIPO DE OPERACAO INVALIDO"
 }
 
-var ErrInvalidOperationType error = errors.New("invalid operation type")
-
-func (ot OperationType) Validate() error {
+func (ot OperationType) Validate() ValidationResult {
 	if ot < CompraAVista || ot > Pagamento {
-		return ErrInvalidOperationType
+		return InvalidResult(fmt.Sprintf("invalid operation type %d", int(ot)))
 	}
-	return nil
+	return ValidResult()
 }

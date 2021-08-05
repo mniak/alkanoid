@@ -34,7 +34,7 @@ func TestAccountRepo_LoadInvalid_ShouldReturnSpecificError(t *testing.T) {
 
 	_, err := sut.Load(id)
 	assert.Error(t, err)
-	assert.Equal(t, domain.ErrAccountNotFound, err)
+	assert.Equal(t, domain.ErrNotFound, err)
 }
 
 func TestAccountRepo_SaveBigId_ShouldUpdateInternalCounter(t *testing.T) {

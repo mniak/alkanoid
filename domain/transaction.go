@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"github.com/hashicorp/go-multierror"
 )
 
 type Transaction struct {
@@ -27,8 +25,6 @@ func NewTransaction(
 	}
 }
 
-func (t Transaction) Validate() error {
-	var err error
-	err = multierror.Append(err, t.OperationType.Validate())
-	return err
+func (t Transaction) Validate() ValidationResult {
+	return t.OperationType.Validate()
 }
