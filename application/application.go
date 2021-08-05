@@ -1,13 +1,39 @@
 package application
 
-type _Application struct{}
+import "github.com/mniak/Alkanoid/domain"
 
-func New() _Application {
-	return _Application{}
+type _Application struct {
+	accountRepo     domain.AccountRepository
+	transactionRepo domain.TransactionRepository
 }
 
-func (a _Application) CreateAccount(CreateAccountRequest) (CreateAccountResponse, error) {
-	return CreateAccountResponse{}, nil
+func New(
+	accountRepo domain.AccountRepository,
+	transactionRepo domain.TransactionRepository,
+) _Application {
+	return _Application{
+		accountRepo:     accountRepo,
+		transactionRepo: transactionRepo,
+	}
+}
+
+func (a _Application) CreateAccount(req CreateAccountRequest) (CreateAccountResponse, error) {
+	account := domain.NewAccount(
+		domain.DocumentNumber(req.DocumentNumber),
+	)
+	err := account.Validate()
+	if err != nil {
+		return CreateAccountResponse{}, err
+	}
+
+	id, err := a.accountRepo.Save(account)
+	if err != nil {
+		return CreateAccountResponse{}, err
+	}
+
+	return CreateAccountResponse{
+		AccountID: id,
+	}, nil
 }
 
 func (a _Application) GetAccount(GetAccountRequest) (GetAccountResponse, error) {

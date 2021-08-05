@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/mniak/Alkanoid/application"
+	"github.com/mniak/Alkanoid/infra/persistence/inmemory"
 )
 
 func setupRouter(app application.Application) *gin.Engine {
@@ -15,7 +16,10 @@ func setupRouter(app application.Application) *gin.Engine {
 }
 
 func main() {
-	app := application.New()
+	app := application.New(
+		inmemory.NewAccountRepository(),
+		inmemory.NewTransactionRepository(),
+	)
 	r := setupRouter(app)
 	r.Run()
 }

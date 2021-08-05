@@ -1,21 +1,8 @@
 package domain
 
-import "time"
-
-type Account struct {
-	ID             int
-	DocumentNumber string
-}
+import "errors"
 
 type OperationType int
-
-type Transaction struct {
-	ID            int
-	AccountID     int
-	OperationType OperationType
-	Amount        float64
-	EventDate     time.Time
-}
 
 const (
 	CompraAVista    = 1
@@ -36,4 +23,13 @@ func (ot OperationType) String() string {
 		return "PAGAMENTO"
 	}
 	return "TIPO DE OPERACAO INVALIDO"
+}
+
+var ErrInvalidOperationType error = errors.New("invalid operation type")
+
+func (ot OperationType) Validate() error {
+	if ot < CompraAVista || ot > Pagamento {
+		return ErrInvalidOperationType
+	}
+	return nil
 }
