@@ -1,49 +1,38 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/mniak/Alkanoid/domain"
 )
 
 type _Application struct {
-	accountRepo     domain.AccountRepository
-	transactionRepo domain.TransactionRepository
+	repos RepositoriesRegistry
 }
 
-func New(
-	accountRepo domain.AccountRepository,
-	transactionRepo domain.TransactionRepository,
-) _Application {
-	return _Application{
-		accountRepo:     accountRepo,
-		transactionRepo: transactionRepo,
-	}
+func NewApplicationWithoutDecorators(repos RepositoriesRegistry) _Application {
+	return _Application{repos: repos}
+}
+
+func NewApplication(repos RepositoriesRegistry) _Application {
+	a := NewApplicationWithoutDecorators(repos)
+	a.repos = a.repos.withValidation(newValidationServicesFromApp(a))
+	return a
 }
 
 func (a _Application) CreateAccount(req CreateAccountRequest) (resp CreateAccountResponse, err error) {
 	account := domain.NewAccount(
 		domain.DocumentNumber(req.DocumentNumber),
 	)
-	valres := account.Validate()
-	if valres.Error != nil {
-		err = valres.Error
-		return
-	} else if !valres.IsValid {
-		err = fmt.Errorf("cannot create account: %s", valres.String())
-		return
-	}
-
-	id, err := a.accountRepo.Save(account)
+	id, err := a.repos.Account.Save(account)
 	if err != nil {
 		return
 	}
+
 	resp.AccountID = id
 	return
 }
 
 func (a _Application) GetAccount(req GetAccountRequest) (resp GetAccountResponse, err error) {
-	acc, err := a.accountRepo.Load(req.AccountID)
+	acc, err := a.repos.Account.Load(req.AccountID)
 	if err != nil {
 		return
 	}
@@ -60,16 +49,7 @@ func (a _Application) CreateTransaction(req CreateTransactionRequest) (resp Crea
 		domain.OperationType(req.OperationTypeID),
 		req.Amount,
 	)
-	valres := transaction.Validate()
-	if valres.Error != nil {
-		err = valres.Error
-		return
-	} else if !valres.IsValid {
-		err = fmt.Errorf("cannot create account: %s", valres.String())
-		return
-	}
-
-	id, err := a.transactionRepo.Save(transaction)
+	id, err := a.repos.Transaction.Save(transaction)
 	if err != nil {
 		return
 	}

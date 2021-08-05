@@ -6,8 +6,8 @@ type _TransactionValidationService struct {
 	acctRepo AccountRepository
 }
 
-func NewTransactionValidationService(acctRepo AccountRepository) _TransactionValidationService {
-	return _TransactionValidationService{
+func NewTransactionValidationService(acctRepo AccountRepository) TransactionValidationService {
+	return &_TransactionValidationService{
 		acctRepo: acctRepo,
 	}
 }

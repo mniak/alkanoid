@@ -16,9 +16,11 @@ func setupRouter(a app.Application) *gin.Engine {
 }
 
 func main() {
-	a := app.New(
-		inmemory.NewAccountRepository(),
-		inmemory.NewTransactionRepository(),
+	a := app.NewApplication(
+		app.RepositoriesRegistry{
+			Account:     inmemory.NewAccountRepository(),
+			Transaction: inmemory.NewTransactionRepository(),
+		},
 	)
 	r := setupRouter(a)
 	r.Run()
