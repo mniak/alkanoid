@@ -40,8 +40,8 @@ func (a _Application) GetAccount(req GetAccountRequest) (resp GetAccountResponse
 		return
 	}
 
-	resp.AccountID = acc.ID()
-	resp.DocumentNumber = acc.DocumentNumber().String()
+	resp.AccountID = acc.ID
+	resp.DocumentNumber = acc.DocumentNumber.String()
 
 	return
 }

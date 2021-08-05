@@ -16,14 +16,14 @@ func NewAccountRepository() domain.AccountRepository {
 }
 
 func (r *_AccountRepository) Save(acc domain.Account) (int, error) {
-	if acc.ID() == 0 {
+	if acc.ID == 0 {
 		r.maxId++
-		acc = acc.WithID(r.maxId)
-	} else if acc.ID() > r.maxId {
-		r.maxId = acc.ID()
+		acc.ID = r.maxId
+	} else if acc.ID > r.maxId {
+		r.maxId = acc.ID
 	}
-	r.data[acc.ID()] = acc
-	return acc.ID(), nil
+	r.data[acc.ID] = acc
+	return acc.ID, nil
 }
 
 func (r *_AccountRepository) Load(id int) (domain.Account, error) {
