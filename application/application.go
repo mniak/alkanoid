@@ -34,8 +34,16 @@ func (a _Application) CreateAccount(req CreateAccountRequest) (resp CreateAccoun
 	return
 }
 
-func (a _Application) GetAccount(req GetAccountRequest) (GetAccountResponse, error) {
-	return GetAccountResponse{}, nil
+func (a _Application) GetAccount(req GetAccountRequest) (resp GetAccountResponse, err error) {
+	acc, err := a.accountRepo.Load(req.AccountID)
+	if err != nil {
+		return
+	}
+
+	resp.AccountID = acc.ID
+	resp.DocumentNumber = acc.DocumentNumber.String()
+
+	return
 }
 
 func (a _Application) CreateTransaction(req CreateTransactionRequest) (resp CreateTransactionResponse, err error) {
