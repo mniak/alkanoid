@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/mniak/Alkanoid/domain"
 )
 
@@ -23,7 +21,7 @@ func (tr *_TransactionRepoWithValidation) Save(trans domain.Transaction) (int, e
 	if valres.Error != nil {
 		return 0, valres.Error
 	} else if !valres.IsValid {
-		return 0, fmt.Errorf("cannot create transaction: %s", valres.String())
+		return 0, domain.ValidationErrorf("cannot create transaction: %s", valres)
 	}
 
 	return tr.TransactionRepository.Save(trans)

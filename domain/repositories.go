@@ -1,9 +1,5 @@
 package domain
 
-import "errors"
-
-var ErrNotFound error = errors.New("not found")
-
 type (
 	AccountRepository interface {
 		Save(acc Account) (int, error)

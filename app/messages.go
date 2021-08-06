@@ -32,6 +32,6 @@ type (
 		Amount          float64 `json:"amount" binding:"required"`
 	}
 	CreateTransactionResponse struct {
-		TransactionID int `json:"account_id"`
+		TransactionID int `json:"transaction_id"`
 	}
 )

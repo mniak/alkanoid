@@ -18,7 +18,7 @@ func (s *_TransactionValidationService) Validate(t Transaction) ValidationResult
 	exists, err := s.acctRepo.Exists(t.AccountID)
 	result = result.AppendError(err)
 	if err == nil && !exists {
-		result.AppendMessage(fmt.Sprintf("account with id %d not found", t.AccountID))
+		result = result.AppendMessage(fmt.Sprintf("account with id %d not found", t.AccountID))
 	}
 	return result
 }
