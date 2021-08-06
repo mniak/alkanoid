@@ -26,11 +26,32 @@ func TestApplication_CreateAccount(t *testing.T) {
 		DocumentNumber: domain.DocumentNumber(req.DocumentNumber),
 	}).Return(id, nil)
 
-	sut := app.NewApplicationWithoutDecorators(app.RepositoriesRegistry{
+	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
 		Account: acctRepo,
 	})
 
 	resp, err := sut.CreateAccount(req)
+	require.NoError(t, err)
+	assert.Equal(t, id, resp.AccountID)
+}
+
+func TestApplication_GetAccount(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	var req app.GetAccountRequest
+	gofakeit.Struct(&req)
+	var acct domain.Account
+	gofakeit.Struct(&acct)
+
+	acctRepo := mocks.NewMockAccountRepository(ctrl)
+	acctRepo.EXPECT().Load(req.AccountID).Return(acct, nil)
+
+	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
+		Account: acctRepo,
+	})
+
+	resp, err := sut.GetAccount(req)
 	require.NoError(t, err)
 	assert.Equal(t, id, resp.AccountID)
 }
@@ -56,7 +77,7 @@ func TestApplication_CreateTransaction(t *testing.T) {
 		}),
 	)).Return(id, nil)
 
-	sut := app.NewApplicationWithoutDecorators(app.RepositoriesRegistry{
+	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
 		Transaction: tranRepo,
 	})
 

@@ -1,27 +1,26 @@
 package app
 
-import (
-	"github.com/mniak/Alkanoid/domain"
-)
-
 type _Application struct {
-	repos RepositoriesRegistry
+	repos  RepositoriesRegistry
+	mapper Mapper
 }
 
-func NewApplicationWithoutDecorators(repos RepositoriesRegistry) _Application {
-	return _Application{repos: repos}
+func NewApplicationWithoutMagic(repos RepositoriesRegistry, mapper Mapper) _Application {
+	return _Application{
+		repos:  repos,
+		mapper: mapper,
+	}
 }
 
 func NewApplication(repos RepositoriesRegistry) _Application {
-	a := NewApplicationWithoutDecorators(repos)
+	mapper := NewMapper()
+	a := NewApplicationWithoutMagic(repos, mapper)
 	a.repos = a.repos.withValidation(newValidationServicesFromApp(a))
 	return a
 }
 
 func (a _Application) CreateAccount(req CreateAccountRequest) (resp CreateAccountResponse, err error) {
-	account := domain.NewAccount(
-		domain.DocumentNumber(req.DocumentNumber),
-	)
+	account := a.mapper.AccountFromCreateAccountRequest(req)
 	id, err := a.repos.Account.Save(account)
 	if err != nil {
 		return
@@ -31,24 +30,17 @@ func (a _Application) CreateAccount(req CreateAccountRequest) (resp CreateAccoun
 	return
 }
 
-func (a _Application) GetAccount(req GetAccountRequest) (resp GetAccountResponse, err error) {
+func (a _Application) GetAccount(req GetAccountRequest) (GetAccountResponse, error) {
 	acc, err := a.repos.Account.Load(req.AccountID)
 	if err != nil {
-		return
+		return GetAccountResponse{}, err
 	}
 
-	resp.AccountID = acc.ID
-	resp.DocumentNumber = acc.DocumentNumber.String()
-
-	return
+	return a.mapper.GetAccountResponseFromAccount(acc), nil
 }
 
 func (a _Application) CreateTransaction(req CreateTransactionRequest) (resp CreateTransactionResponse, err error) {
-	transaction := domain.NewTransaction(
-		req.AccountID,
-		domain.OperationType(req.OperationTypeID),
-		req.Amount,
-	)
+	transaction := a.mapper.TransactionFromCreateTransactionRequest(req)
 	id, err := a.repos.Transaction.Save(transaction)
 	if err != nil {
 		return
