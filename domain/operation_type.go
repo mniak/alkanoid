@@ -31,3 +31,7 @@ func (ot OperationType) Validate() ValidationResult {
 	}
 	return ValidResult()
 }
+
+func (ot OperationType) ID() int {
+	return int(ot)
+}

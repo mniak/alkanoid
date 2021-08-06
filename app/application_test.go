@@ -44,9 +44,17 @@ func TestApplication_CreateTransaction(t *testing.T) {
 	id := int(gofakeit.Int32())
 
 	tranRepo := mocks.NewMockTransactionRepository(ctrl)
-	tranRepo.EXPECT().Save(matchers.InlineMatcher(func(x interface{}) bool {
-		return false
-	})).Return(id, nil)
+	tranRepo.EXPECT().Save(gomock.All(
+		matchers.TransactionFieldEquals("AccountID", req.AccountID, func(tr domain.Transaction) interface{} {
+			return tr.AccountID
+		}),
+		matchers.TransactionFieldEquals("Amount", req.Amount, func(tr domain.Transaction) interface{} {
+			return tr.Amount
+		}),
+		matchers.TransactionFieldEquals("OperationType", req.OperationTypeID, func(tr domain.Transaction) interface{} {
+			return tr.OperationType.ID()
+		}),
+	)).Return(id, nil)
 
 	sut := app.NewApplicationWithoutDecorators(app.RepositoriesRegistry{
 		Transaction: tranRepo,
