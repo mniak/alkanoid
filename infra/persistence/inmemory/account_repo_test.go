@@ -56,3 +56,23 @@ func TestAccountRepo_SaveBigId_ShouldUpdateInternalCounter(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, 501, id)
 }
+
+func TestAccountRepo_Exists(t *testing.T) {
+	const id = 2
+	sut := NewAccountRepository()
+
+	exists, err := sut.Exists(id)
+	require.NoError(t, err)
+	require.False(t, exists)
+
+	var acc domain.Account
+	gofakeit.Struct(&acc)
+	acc.ID = id
+
+	_, err = sut.Save(acc)
+	require.NoError(t, err)
+
+	exists, err = sut.Exists(id)
+	require.NoError(t, err)
+	require.True(t, exists)
+}
