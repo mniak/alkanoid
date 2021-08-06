@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "golang.go",
+        "ethan-reesor.vscode-go-test-adapter",
+        "humao.rest-client"
+    ]
+}
