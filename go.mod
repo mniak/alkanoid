@@ -15,6 +15,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/ugorji/go v1.2.6 // indirect
+	golang.org/dl v0.0.0-20210805175753-70f86bf65abd // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
