@@ -6,18 +6,18 @@ import (
 
 type _TransactionRepoWithValidation struct {
 	domain.TransactionRepository
-	validationServices ValidationServicesRegistry
+	transactionValidationService domain.TransactionValidationService
 }
 
-func WrapTransactionRepoWithValidation(inner domain.TransactionRepository, validationServices ValidationServicesRegistry) domain.TransactionRepository {
+func WrapTransactionRepoWithValidation(inner domain.TransactionRepository, transactionValidationService domain.TransactionValidationService) domain.TransactionRepository {
 	return &_TransactionRepoWithValidation{
-		TransactionRepository: inner,
-		validationServices:    validationServices,
+		TransactionRepository:        inner,
+		transactionValidationService: transactionValidationService,
 	}
 }
 
 func (tr *_TransactionRepoWithValidation) Save(trans domain.Transaction) (int, error) {
-	valres := tr.validationServices.Transaction.Validate(trans)
+	valres := tr.transactionValidationService.Validate(trans)
 	if valres.Error != nil {
 		return 0, valres.Error
 	} else if !valres.IsValid {

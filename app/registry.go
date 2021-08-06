@@ -18,6 +18,6 @@ type RepositoriesRegistry struct {
 }
 
 func (rr RepositoriesRegistry) withValidation(vsr ValidationServicesRegistry) RepositoriesRegistry {
-	rr.Transaction = WrapTransactionRepoWithValidation(rr.Transaction, vsr)
+	rr.Transaction = WrapTransactionRepoWithValidation(rr.Transaction, vsr.Transaction)
 	return rr
 }
