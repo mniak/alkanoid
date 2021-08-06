@@ -1,7 +1,8 @@
 {
     "recommendations": [
         "golang.go",
+        "hbenl.vscode-test-explorer",
         "ethan-reesor.vscode-go-test-adapter",
-        "humao.rest-client"
+        "humao.rest-client",
     ]
 }
