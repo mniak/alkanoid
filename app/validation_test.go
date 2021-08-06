@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v6"
@@ -40,9 +41,8 @@ func TestTransactionRepoWithValidation_Save_WhenHasMessage_ShouldNotReturnError(
 	var trans domain.Transaction
 	gofakeit.Struct(&trans)
 
-	inner := mocks.NewMockTransactionRepository(ctrl)
-
 	msg := gofakeit.Sentence(5)
+	inner := mocks.NewMockTransactionRepository(ctrl)
 	valsvc := mocks.NewMockTransactionValidationService(ctrl)
 	valsvc.EXPECT().Validate(trans).Return(domain.InvalidResult(msg))
 
@@ -51,4 +51,24 @@ func TestTransactionRepoWithValidation_Save_WhenHasMessage_ShouldNotReturnError(
 	_, err := sut.Save(trans)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), msg)
+}
+
+func TestTransactionRepoWithValidation_Save_WhenHasError_ShouldReturnError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	var trans domain.Transaction
+	gofakeit.Struct(&trans)
+
+	expectedError := errors.New(gofakeit.Sentence(5))
+
+	inner := mocks.NewMockTransactionRepository(ctrl)
+	valsvc := mocks.NewMockTransactionValidationService(ctrl)
+	valsvc.EXPECT().Validate(trans).Return(domain.ValidationErrorResult(expectedError))
+
+	sut := app.WrapTransactionRepoWithValidation(inner, valsvc)
+
+	_, err := sut.Save(trans)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), expectedError.Error())
 }
