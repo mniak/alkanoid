@@ -2,7 +2,21 @@ Alkanoid
 ================
 
 
-## Executar
+## Compilar/Executar
+
+### Usando Docker
+
+É necessário ter o docker instalado e rodando em sua máquina.
+
+#### Gerando a imagem Docker
+```
+docker build . -f cmd/http/Dockerfile -t alkanoid:http
+```
+
+#### Rodando um container Docker
+```
+docker run --rm -p 8080:8080 alkanoid:http
+```
 
 ### Usando o Go
 

@@ -1,27 +1,29 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mniak/Alkanoid/app"
 	"github.com/mniak/Alkanoid/infra/persistence/inmemory"
 )
 
 func setupRouter(a app.Application) *gin.Engine {
-	r := gin.Default()
-
-	r.POST("/accounts", AppHandler(a, CreateAccount))
-	r.GET("/accounts/:accountId", AppHandler(a, GetAccount))
-	r.POST("/transactions", AppHandler(a, CreateTransaction))
-	return r
+	router := gin.Default()
+	router.POST("/accounts", AppHandler(a, CreateAccount))
+	router.GET("/accounts/:accountId", AppHandler(a, GetAccount))
+	router.POST("/transactions", AppHandler(a, CreateTransaction))
+	return router
 }
 
 func main() {
-	a := app.NewApplication(
+	application := app.NewApplication(
 		app.RepositoriesRegistry{
 			Account:     inmemory.NewAccountRepository(),
 			Transaction: inmemory.NewTransactionRepository(),
 		},
 	)
-	r := setupRouter(a)
-	r.Run()
+	engine := setupRouter(application)
+	fmt.Println("Application started")
+	engine.Run()
 }
