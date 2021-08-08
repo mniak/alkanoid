@@ -7,7 +7,6 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/mniak/Alkanoid/app"
 	"github.com/mniak/Alkanoid/domain"
-	"github.com/mniak/Alkanoid/internal/matchers"
 	"github.com/mniak/Alkanoid/internal/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,14 +20,17 @@ func TestApplication_CreateAccount(t *testing.T) {
 	gofakeit.Struct(&req)
 	id := int(gofakeit.Int32())
 
-	acctRepo := mocks.NewMockAccountRepository(ctrl)
-	acctRepo.EXPECT().Save(domain.Account{
+	acc := domain.Account{
 		DocumentNumber: domain.DocumentNumber(req.DocumentNumber),
-	}).Return(id, nil)
+	}
+	mapper := mocks.NewMockMapper(ctrl)
+	mapper.EXPECT().AccountFromCreateAccountRequest(req).Return(acc)
+	acctRepo := mocks.NewMockAccountRepository(ctrl)
+	acctRepo.EXPECT().Save(acc).Return(id, nil)
 
 	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
 		Account: acctRepo,
-	})
+	}, mapper)
 
 	resp, err := sut.CreateAccount(req)
 	require.NoError(t, err)
@@ -41,19 +43,23 @@ func TestApplication_GetAccount(t *testing.T) {
 
 	var req app.GetAccountRequest
 	gofakeit.Struct(&req)
-	var acct domain.Account
-	gofakeit.Struct(&acct)
+	var acc domain.Account
+	gofakeit.Struct(&acc)
+	var expectedResp app.GetAccountResponse
+	gofakeit.Struct(&expectedResp)
 
 	acctRepo := mocks.NewMockAccountRepository(ctrl)
-	acctRepo.EXPECT().Load(req.AccountID).Return(acct, nil)
+	acctRepo.EXPECT().Load(req.AccountID).Return(acc, nil)
+	mapper := mocks.NewMockMapper(ctrl)
+	mapper.EXPECT().GetAccountResponseFromAccount(acc).Return(expectedResp)
 
 	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
 		Account: acctRepo,
-	})
+	}, mapper)
 
 	resp, err := sut.GetAccount(req)
 	require.NoError(t, err)
-	assert.Equal(t, id, resp.AccountID)
+	assert.Equal(t, expectedResp, resp)
 }
 
 func TestApplication_CreateTransaction(t *testing.T) {
@@ -63,23 +69,17 @@ func TestApplication_CreateTransaction(t *testing.T) {
 	var req app.CreateTransactionRequest
 	gofakeit.Struct(&req)
 	id := int(gofakeit.Int32())
+	var tran domain.Transaction
+	gofakeit.Struct(&tran)
 
+	mapper := mocks.NewMockMapper(ctrl)
+	mapper.EXPECT().TransactionFromCreateTransactionRequest(req).Return(tran)
 	tranRepo := mocks.NewMockTransactionRepository(ctrl)
-	tranRepo.EXPECT().Save(gomock.All(
-		matchers.TransactionFieldEquals("AccountID", req.AccountID, func(tr domain.Transaction) interface{} {
-			return tr.AccountID
-		}),
-		matchers.TransactionFieldEquals("Amount", req.Amount, func(tr domain.Transaction) interface{} {
-			return tr.Amount
-		}),
-		matchers.TransactionFieldEquals("OperationType", req.OperationTypeID, func(tr domain.Transaction) interface{} {
-			return tr.OperationType.ID()
-		}),
-	)).Return(id, nil)
+	tranRepo.EXPECT().Save(tran).Return(id, nil)
 
 	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
 		Transaction: tranRepo,
-	})
+	}, mapper)
 
 	resp, err := sut.CreateTransaction(req)
 	require.NoError(t, err)
