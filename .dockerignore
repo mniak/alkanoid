@@ -4,6 +4,7 @@
 
 .gitignore
 .dockerignore
+**/Dockerfile
 LICENSE
 
 *.md
