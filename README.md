@@ -11,7 +11,7 @@ Para mais instruções, acesse https://golang.org/doc/install.
 
 Em seguida, execute o seguinte comando:
 ```
-go run .
+go run ./cmd/http
 ```
 
 Pronto, a aplicação já está rodando e poderá receber chamadas em http://localhost:8080!
