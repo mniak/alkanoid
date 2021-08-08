@@ -13,6 +13,66 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestAccountRepoWithValidation_Save_WhenIsValid_ShouldNotReturnError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	var trans domain.Account
+	gofakeit.Struct(&trans)
+	expectedId := int(gofakeit.Int32())
+
+	inner := mocks.NewMockAccountRepository(ctrl)
+	inner.EXPECT().Save(trans).Return(expectedId, nil)
+
+	valsvc := mocks.NewMockAccountValidationService(ctrl)
+	valsvc.EXPECT().Validate(trans).Return(domain.ValidResult())
+
+	sut := app.WrapAccountRepoWithValidation(inner, valsvc)
+
+	id, err := sut.Save(trans)
+	require.NoError(t, err)
+	assert.Equal(t, expectedId, id)
+}
+
+func TestAccountRepoWithValidation_Save_WhenHasMessage_ShouldNotReturnError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	var trans domain.Account
+	gofakeit.Struct(&trans)
+
+	msg := gofakeit.Sentence(5)
+	inner := mocks.NewMockAccountRepository(ctrl)
+	valsvc := mocks.NewMockAccountValidationService(ctrl)
+	valsvc.EXPECT().Validate(trans).Return(domain.InvalidResult(msg))
+
+	sut := app.WrapAccountRepoWithValidation(inner, valsvc)
+
+	_, err := sut.Save(trans)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), msg)
+}
+
+func TestAccountRepoWithValidation_Save_WhenHasError_ShouldReturnError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	var trans domain.Account
+	gofakeit.Struct(&trans)
+
+	expectedError := errors.New(gofakeit.Sentence(5))
+
+	inner := mocks.NewMockAccountRepository(ctrl)
+	valsvc := mocks.NewMockAccountValidationService(ctrl)
+	valsvc.EXPECT().Validate(trans).Return(domain.ValidationErrorResult(expectedError))
+
+	sut := app.WrapAccountRepoWithValidation(inner, valsvc)
+
+	_, err := sut.Save(trans)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), expectedError.Error())
+}
+
 func TestTransactionRepoWithValidation_Save_WhenIsValid_ShouldNotReturnError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
