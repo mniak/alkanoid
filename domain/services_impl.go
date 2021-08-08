@@ -2,6 +2,18 @@ package domain
 
 import "fmt"
 
+type _AccountValidationService struct{}
+
+func NewAccountValidationService() AccountValidationService {
+	return &_AccountValidationService{}
+}
+
+func (s *_AccountValidationService) Validate(a Account) ValidationResult {
+	result := ValidResult()
+	result = result.Combine(a.Validate())
+	return result
+}
+
 type _TransactionValidationService struct {
 	acctRepo AccountRepository
 }

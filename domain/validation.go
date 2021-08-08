@@ -35,6 +35,15 @@ func (vr ValidationResult) AppendMessage(message string) ValidationResult {
 	return vr
 }
 
+func (vr ValidationResult) Combine(vr2 ValidationResult) ValidationResult {
+	for _, msg := range vr2.Messages {
+		vr = vr.AppendMessage(msg)
+	}
+
+	vr = vr.AppendError(vr2.Error)
+	return vr
+}
+
 func (vr ValidationResult) AppendError(err error) ValidationResult {
 	if err != nil {
 		vr.Error = multierror.Append(vr.Error, err)
