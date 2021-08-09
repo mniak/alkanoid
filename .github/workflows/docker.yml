@@ -21,7 +21,6 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: name/app
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Log in to the Container registry
