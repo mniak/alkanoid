@@ -26,5 +26,18 @@ func NewTransaction(
 }
 
 func (t Transaction) Validate() ValidationResult {
-	return t.OperationType.Validate()
+	result := t.OperationType.Validate()
+
+	if t.OperationType == OpCompraAVista ||
+		t.OperationType == OpCompraParcelada ||
+		t.OperationType == OpSaque {
+		if t.Amount > 0 {
+			result = result.AppendMessage("operations of type %s require a negative amount", t.OperationType)
+		}
+	} else if t.OperationType == OpPagamento {
+		if t.Amount < 0 {
+			result = result.AppendMessage("operations of type %s require a positive amount", t.OperationType)
+		}
+	}
+	return result
 }
