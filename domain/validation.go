@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hashicorp/go-multierror"
@@ -27,9 +28,12 @@ func ValidationErrorResult(err error) ValidationResult {
 	return ValidResult().AppendError(err)
 }
 
-func (vr ValidationResult) AppendMessage(message string) ValidationResult {
-	if message != "" {
-		vr.Messages = append(vr.Messages, message)
+func (vr ValidationResult) AppendMessage(messageOrFormat string, args ...interface{}) ValidationResult {
+	if messageOrFormat != "" {
+		if len(args) > 0 {
+			messageOrFormat = fmt.Sprintf(messageOrFormat, args...)
+		}
+		vr.Messages = append(vr.Messages, messageOrFormat)
 		vr.IsValid = false
 	}
 	return vr

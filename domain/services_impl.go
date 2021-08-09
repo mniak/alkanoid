@@ -25,8 +25,7 @@ func NewTransactionValidationService(acctRepo AccountRepository) TransactionVali
 }
 
 func (s *_TransactionValidationService) Validate(t Transaction) ValidationResult {
-	result := ValidResult()
-
+	result := t.Validate()
 	exists, err := s.acctRepo.Exists(t.AccountID)
 	result = result.AppendError(err)
 	if err == nil && !exists {
