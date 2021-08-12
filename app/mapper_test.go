@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -35,11 +36,39 @@ func TestTransactionFromCreateTransactionRequest(t *testing.T) {
 	var req app.CreateTransactionRequest
 	gofakeit.Struct(&req)
 
-	sut := app.NewMapper()
-	tran := sut.TransactionFromCreateTransactionRequest(req)
+	dataset := []struct {
+		optype domain.OperationType
+		sign   int
+	}{
+		{
+			optype: domain.OpCompraAVista,
+			sign:   -1,
+		},
+		{
+			optype: domain.OpCompraParcelada,
+			sign:   -1,
+		},
+		{
+			optype: domain.OpSaque,
+			sign:   -1,
+		},
+		{
+			optype: domain.OpPagamento,
+			sign:   1,
+		},
+	}
 
-	assert.Equal(t, tran.AccountID, req.AccountID)
-	assert.Equal(t, tran.OperationType.ID(), req.OperationTypeID)
-	assert.Equal(t, tran.Amount, req.Amount)
-	assert.InDelta(t, time.Now().UnixNano(), tran.EventDate.UnixNano(), float64((100 * time.Millisecond).Nanoseconds()))
+	for _, data := range dataset {
+		t.Run(fmt.Sprint(data.optype), func(t *testing.T) {
+			req.OperationTypeID = data.optype.ID()
+
+			sut := app.NewMapper()
+			tran := sut.TransactionFromCreateTransactionRequest(req)
+
+			assert.Equal(t, tran.AccountID, req.AccountID)
+			assert.Equal(t, tran.OperationType.ID(), req.OperationTypeID)
+			assert.Equal(t, tran.Amount, req.Amount*float64(data.sign))
+			assert.InDelta(t, time.Now().UnixNano(), tran.EventDate.UnixNano(), float64((100 * time.Millisecond).Nanoseconds()))
+		})
+	}
 }
