@@ -35,3 +35,12 @@ func (ot OperationType) Validate() ValidationResult {
 func (ot OperationType) ID() int {
 	return int(ot)
 }
+
+func (ot OperationType) IsDeposit() bool {
+	switch ot {
+	case OpPagamento:
+		return true
+	default:
+		return false
+	}
+}

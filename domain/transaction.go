@@ -41,3 +41,11 @@ func (t Transaction) Validate() ValidationResult {
 	}
 	return result
 }
+
+func (t Transaction) AccountCreditImpact() float64 {
+	if t.OperationType.IsDeposit() {
+		return t.Amount
+	} else {
+		return t.Amount * -1
+	}
+}

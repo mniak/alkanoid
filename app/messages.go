@@ -20,8 +20,9 @@ type (
 		AccountID int `uri:"accountId" binding:"required"`
 	}
 	GetAccountResponse struct {
-		AccountID      int    `json:"account_id"`
-		DocumentNumber string `json:"document_number"`
+		AccountID            int     `json:"account_id"`
+		DocumentNumber       string  `json:"document_number"`
+		AvailableCreditLimit float64 `json:"available_credit_limit"`
 	}
 )
 

@@ -69,15 +69,27 @@ func TestApplication_CreateTransaction(t *testing.T) {
 	var req app.CreateTransactionRequest
 	gofakeit.Struct(&req)
 	id := int(gofakeit.Int32())
+
 	var tran domain.Transaction
 	gofakeit.Struct(&tran)
+	tran.Amount = float64(gofakeit.Number(10, 100))
+
+	var acct domain.Account
+	gofakeit.Struct(&acct)
+	acct.AvailableCreditLimit = float64(gofakeit.Number(150, 200))
 
 	mapper := mocks.NewMockMapper(ctrl)
 	mapper.EXPECT().TransactionFromCreateTransactionRequest(req).Return(tran)
+
 	tranRepo := mocks.NewMockTransactionRepository(ctrl)
 	tranRepo.EXPECT().Save(tran).Return(id, nil)
 
+	acctRepo := mocks.NewMockAccountRepository(ctrl)
+	acctRepo.EXPECT().Load(req.AccountID).Return(acct, nil)
+	acctRepo.EXPECT().Save(gomock.Any()).Return(acct.ID, nil)
+
 	sut := app.NewApplicationWithoutMagic(app.RepositoriesRegistry{
+		Account:     acctRepo,
 		Transaction: tranRepo,
 	}, mapper)
 

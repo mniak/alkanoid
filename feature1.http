@@ -1,0 +1,28 @@
+# Cria conta
+POST http://localhost:8080/accounts
+
+{
+    "document_number": "12345678900"
+}
+
+# Dá uma olhada na conta
+GET http://localhost:8080/accounts/1
+
+
+# Deposita 100 contos
+POST http://localhost:8080/transactions
+
+{
+    "account_id": 1,
+    "operation_type_id": 4,
+    "amount": 100
+}
+
+# Saque no valor de 30
+POST http://localhost:8080/transactions
+
+{
+    "account_id": 1,
+    "operation_type_id": 3,
+    "amount": -30
+}

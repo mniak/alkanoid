@@ -41,6 +41,20 @@ func (a _Application) GetAccount(req GetAccountRequest) (GetAccountResponse, err
 
 func (a _Application) CreateTransaction(req CreateTransactionRequest) (resp CreateTransactionResponse, err error) {
 	transaction := a.mapper.TransactionFromCreateTransactionRequest(req)
+
+	accountCreditImpact := transaction.AccountCreditImpact()
+
+	acc, err := a.repos.Account.Load(req.AccountID)
+	if err != nil {
+		return
+	}
+	acc.AvailableCreditLimit += accountCreditImpact
+
+	_, err = a.repos.Account.Save(acc)
+	if err != nil {
+		return
+	}
+
 	id, err := a.repos.Transaction.Save(transaction)
 	if err != nil {
 		return

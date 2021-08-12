@@ -31,5 +31,20 @@ func (s *_TransactionValidationService) Validate(t Transaction) ValidationResult
 	if err == nil && !exists {
 		result = result.AppendMessage(fmt.Sprintf("account with id %d not found", t.AccountID))
 	}
+
+	/*
+
+			se for de gastar então:
+		       limite = pegalimite(conta_id)
+			   se limite < trans.valor {
+				   falhar
+			   } senão {
+				   blz
+				   e descontar do limite
+			   }
+			senão (se de depositar) então:
+			   aumenta limite
+			fim
+	*/
 	return result
 }
