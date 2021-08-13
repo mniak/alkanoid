@@ -24,5 +24,5 @@ POST http://localhost:8080/transactions
 {
     "account_id": 1,
     "operation_type_id": 3,
-    "amount": -30
+    "amount": 30
 }

@@ -32,11 +32,11 @@ func (t Transaction) Validate() ValidationResult {
 		t.OperationType == OpCompraParcelada ||
 		t.OperationType == OpSaque {
 		if t.Amount > 0 {
-			result = result.AppendMessage("operations of type %s require a negative amount", t.OperationType)
+			result = result.AppendMessage("invalid amout for operation of type %s", t.OperationType)
 		}
 	} else if t.OperationType == OpPagamento {
 		if t.Amount < 0 {
-			result = result.AppendMessage("operations of type %s require a positive amount", t.OperationType)
+			result = result.AppendMessage("invalid amout for operation of type %s", t.OperationType)
 		}
 	}
 	return result

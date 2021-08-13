@@ -13,15 +13,15 @@ func TestTransactionValidate_WhenCompraOrSaque_AmountShouldBeNegativeOr0(t *test
 	}{
 		{
 			optype:  OpCompraAVista,
-			message: "operations of type COMPRA A VISTA require a negative amount",
+			message: "invalid amout for operation of type COMPRA A VISTA",
 		},
 		{
 			optype:  OpCompraParcelada,
-			message: "operations of type COMPRA PARCELADA require a negative amount",
+			message: "invalid amout for operation of type COMPRA PARCELADA",
 		},
 		{
 			optype:  OpSaque,
-			message: "operations of type SAQUE require a negative amount",
+			message: "invalid amout for operation of type SAQUE",
 		},
 	}
 	for _, tc := range testCases {
@@ -49,7 +49,7 @@ func TestTransactionValidate_WhenPagamento_AmountShouldBePositiveOr0(t *testing.
 	}{
 		{
 			optype:  OpPagamento,
-			message: "operations of type PAGAMENTO require a positive amount",
+			message: "invalid amout for operation of type PAGAMENTO",
 		},
 	}
 	for _, tc := range testCases {
