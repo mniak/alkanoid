@@ -3,7 +3,7 @@ module github.com/mniak/Alkanoid
 go 1.16
 
 require (
-	github.com/brianvoe/gofakeit/v6 v6.7.0
+	github.com/brianvoe/gofakeit/v6 v6.15.0
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
 	github.com/golang/mock v1.6.0
